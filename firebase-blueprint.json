@@ -1,0 +1,344 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated user account and RBAC role assignment.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "role": { "type": "string", "enum": ["ceo", "manager", "marketing", "sales", "warehouse", "accountant", "customer"] },
+        "department": { "type": "string", "maxLength": 80 },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "role", "active", "createdAt", "updatedAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Luxury fragrance SKU, pricing, olfactory notes, and multi-warehouse stock.",
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string", "minLength": 2, "maxLength": 40, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "subtitle": { "type": "string", "maxLength": 160 },
+        "category": { "type": "string", "enum": ["Perfume", "Diffuser", "Candle", "Car Fragrance", "Gift Set"] },
+        "gender": { "type": "string", "enum": ["Women", "Unisex", "Men", "Home"] },
+        "sizeMl": { "type": "number" },
+        "variants": { "type": "array", "description": "Up to 10 bottle sizes or gift set variants" },
+        "fragranceNotes": { "type": "object", "description": "Top, heart, and base scent notes" },
+        "description": { "type": "string", "maxLength": 2000 },
+        "costUsd": { "type": "number" },
+        "priceUsd": { "type": "number" },
+        "regionalPrices": { "type": "object", "description": "Currency price map for AED, NGN, USD, GHS, KES, TZS, UGX" },
+        "imageUrl": { "type": "string", "maxLength": 500 },
+        "stockByWarehouse": { "type": "object", "description": "Stock count per regional warehouse" },
+        "totalStock": { "type": "number" },
+        "reorderPoint": { "type": "number" },
+        "supplier": { "type": "string", "maxLength": 120 },
+        "batchNumber": { "type": "string", "maxLength": 60 },
+        "active": { "type": "boolean" },
+        "isDemo": { "type": "boolean" },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sku", "name", "category", "gender", "sizeMl", "costUsd", "priceUsd", "totalStock", "reorderPoint", "active", "isDemo", "ownerUid", "createdAt", "updatedAt"]
+    },
+    "StockMovement": {
+      "title": "StockMovement",
+      "description": "Audit log of inventory restocks, warehouse transfers, and deductions.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "sku": { "type": "string", "maxLength": 40 },
+        "productName": { "type": "string", "maxLength": 120 },
+        "type": { "type": "string", "enum": ["restock", "transfer", "sale", "adjustment"] },
+        "fromWarehouse": { "type": "string", "maxLength": 60 },
+        "toWarehouse": { "type": "string", "maxLength": 60 },
+        "quantity": { "type": "number" },
+        "batchNumber": { "type": "string", "maxLength": 60 },
+        "notes": { "type": "string", "maxLength": 400 },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "sku", "productName", "type", "quantity", "ownerUid", "isDemo", "createdAt"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "CRM customer profile, preferences, loyalty, pipeline stage, and LTV.",
+      "type": "object",
+      "properties": {
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "fullName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "email": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "country": { "type": "string", "maxLength": 60 },
+        "city": { "type": "string", "maxLength": 80 },
+        "preferredScentFamily": { "type": "string", "maxLength": 80 },
+        "birthday": { "type": "string", "maxLength": 20 },
+        "consentEmail": { "type": "boolean" },
+        "consentWhatsapp": { "type": "boolean" },
+        "loyaltyPoints": { "type": "number" },
+        "segment": { "type": "string", "enum": ["VIP", "Repeat", "New", "Lead", "At Risk"] },
+        "pipelineStage": { "type": "string", "enum": ["Lead", "Qualified", "Proposal", "Customer", "Repeat Advocate"] },
+        "totalSpentUsd": { "type": "number" },
+        "ordersCount": { "type": "number" },
+        "ltvUsd": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "nextFollowUpDate": { "type": "string", "maxLength": 30 },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerUid", "fullName", "email", "country", "segment", "pipelineStage", "consentEmail", "consentWhatsapp", "loyaltyPoints", "totalSpentUsd", "ordersCount", "ltvUsd", "isDemo", "createdAt", "updatedAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "E-commerce and concierge sales order with regional currency, tax, and fulfillment status.",
+      "type": "object",
+      "properties": {
+        "orderNumber": { "type": "string", "minLength": 3, "maxLength": 40 },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "customerEmail": { "type": "string", "maxLength": 200 },
+        "customerPhone": { "type": "string", "maxLength": 40 },
+        "shippingAddress": { "type": "string", "maxLength": 300 },
+        "country": { "type": "string", "maxLength": 60 },
+        "currency": { "type": "string", "enum": ["AED", "NGN", "USD", "GHS", "KES", "TZS", "UGX"] },
+        "exchangeRateToUsd": { "type": "number" },
+        "items": { "type": "array", "description": "Up to 20 line items" },
+        "subtotalLocal": { "type": "number" },
+        "discountCode": { "type": "string", "maxLength": 40 },
+        "discountLocal": { "type": "number" },
+        "taxLocal": { "type": "number" },
+        "shippingLocal": { "type": "number" },
+        "totalLocal": { "type": "number" },
+        "totalUsd": { "type": "number" },
+        "cogsUsd": { "type": "number" },
+        "channel": { "type": "string", "enum": ["Online Storefront", "WhatsApp Concierge", "Instagram DM", "Boutique Wholesale", "Marketplace"] },
+        "campaignId": { "type": "string", "maxLength": 128 },
+        "paymentGateway": { "type": "string", "maxLength": 60 },
+        "paymentStatus": { "type": "string", "enum": ["Pending", "Authorized", "Paid", "Refunded"] },
+        "status": { "type": "string", "enum": ["Pending", "Confirmed", "Processing", "Shipped", "Delivered", "Cancelled", "Refunded"] },
+        "trackingNumber": { "type": "string", "maxLength": 80 },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderNumber", "ownerUid", "customerName", "customerEmail", "country", "currency", "items", "totalLocal", "totalUsd", "cogsUsd", "channel", "paymentStatus", "status", "isDemo", "createdAt", "updatedAt"]
+    },
+    "Campaign": {
+      "title": "Campaign",
+      "description": "Marketing campaign with budget, spend, A/B test tracking, and ROAS attribution.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "objective": { "type": "string", "maxLength": 100 },
+        "channel": { "type": "string", "enum": ["Instagram", "TikTok", "Facebook", "Google Ads", "WhatsApp", "Email", "Influencer"] },
+        "targetCountry": { "type": "string", "maxLength": 60 },
+        "targetAudience": { "type": "string", "maxLength": 200 },
+        "productId": { "type": "string", "maxLength": 128 },
+        "productName": { "type": "string", "maxLength": 120 },
+        "budgetUsd": { "type": "number" },
+        "spendUsd": { "type": "number" },
+        "impressions": { "type": "number" },
+        "clicks": { "type": "number" },
+        "conversions": { "type": "number" },
+        "attributedRevenueUsd": { "type": "number" },
+        "abVariantA": { "type": "string", "maxLength": 200 },
+        "abVariantB": { "type": "string", "maxLength": 200 },
+        "abWinner": { "type": "string", "maxLength": 20 },
+        "startDate": { "type": "string", "maxLength": 30 },
+        "endDate": { "type": "string", "maxLength": 30 },
+        "status": { "type": "string", "enum": ["Draft", "Scheduled", "Active", "Paused", "Completed"] },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "objective", "channel", "targetCountry", "budgetUsd", "spendUsd", "status", "ownerUid", "isDemo", "createdAt", "updatedAt"]
+    },
+    "AiContent": {
+      "title": "AiContent",
+      "description": "AI Marketing Studio generated assets, calendar schedule, and approval state.",
+      "type": "object",
+      "properties": {
+        "productName": { "type": "string", "maxLength": 120 },
+        "platform": { "type": "string", "maxLength": 60 },
+        "targetCountry": { "type": "string", "maxLength": 60 },
+        "targetAudience": { "type": "string", "maxLength": 200 },
+        "objective": { "type": "string", "maxLength": 100 },
+        "tone": { "type": "string", "maxLength": 60 },
+        "language": { "type": "string", "maxLength": 40 },
+        "title": { "type": "string", "maxLength": 180 },
+        "variations": { "type": "array", "description": "Up to 5 generated copy variations" },
+        "hashtags": { "type": "array", "description": "Up to 15 hashtags" },
+        "cta": { "type": "string", "maxLength": 200 },
+        "creativeBrief": { "type": "string", "maxLength": 1200 },
+        "postingSchedule": { "type": "string", "maxLength": 200 },
+        "scheduledDate": { "type": "string", "maxLength": 30 },
+        "approvalStatus": { "type": "string", "enum": ["Draft", "Pending Review", "Approved", "Rejected", "Scheduled"] },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productName", "platform", "targetCountry", "title", "variations", "approvalStatus", "ownerUid", "createdAt", "updatedAt"]
+    },
+    "MessagingCampaign": {
+      "title": "MessagingCampaign",
+      "description": "WhatsApp Business and Email marketing templates, schedules, and provider gating.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "channel": { "type": "string", "enum": ["WhatsApp Business", "Email"] },
+        "templateName": { "type": "string", "maxLength": 100 },
+        "segment": { "type": "string", "maxLength": 60 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "body": { "type": "string", "maxLength": 2000 },
+        "scheduledAt": { "type": "string", "maxLength": 40 },
+        "status": { "type": "string", "enum": ["Draft", "Requires Provider Credentials", "Scheduled", "Sent", "Paused"] },
+        "recipientCount": { "type": "number" },
+        "deliveredCount": { "type": "number" },
+        "openedCount": { "type": "number" },
+        "clickedCount": { "type": "number" },
+        "unsubscribedCount": { "type": "number" },
+        "providerConfigured": { "type": "boolean" },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "channel", "segment", "body", "status", "providerConfigured", "ownerUid", "isDemo", "createdAt", "updatedAt"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Operating, logistics, customs, and marketing expense ledger entries.",
+      "type": "object",
+      "properties": {
+        "category": { "type": "string", "enum": ["Marketing", "Logistics", "Packaging", "Salaries", "Rent & Boutique", "Customs & Duty", "Other"] },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "country": { "type": "string", "maxLength": 60 },
+        "currency": { "type": "string", "enum": ["AED", "NGN", "USD", "GHS", "KES", "TZS", "UGX"] },
+        "amountLocal": { "type": "number" },
+        "amountUsd": { "type": "number" },
+        "expenseDate": { "type": "string", "maxLength": 30 },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["category", "description", "country", "currency", "amountLocal", "amountUsd", "expenseDate", "ownerUid", "isDemo", "createdAt"]
+    },
+    "RegionalConfig": {
+      "title": "RegionalConfig",
+      "description": "Country-specific currency, FX rate, VAT/tax, shipping, and storefront activation settings.",
+      "type": "object",
+      "properties": {
+        "countryCode": { "type": "string", "minLength": 2, "maxLength": 10 },
+        "countryName": { "type": "string", "maxLength": 80 },
+        "region": { "type": "string", "enum": ["UAE", "Africa", "International"] },
+        "currency": { "type": "string", "enum": ["AED", "NGN", "USD", "GHS", "KES", "TZS", "UGX"] },
+        "currencySymbol": { "type": "string", "maxLength": 10 },
+        "exchangeRatePerUsd": { "type": "number" },
+        "rateSource": { "type": "string", "maxLength": 120 },
+        "rateUpdatedAt": { "type": "string", "maxLength": 50 },
+        "vatPercent": { "type": "number" },
+        "shippingFlatUsd": { "type": "number" },
+        "freeShippingThresholdUsd": { "type": "number" },
+        "storefrontActive": { "type": "boolean" },
+        "audienceNotes": { "type": "string", "maxLength": 400 },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["countryCode", "countryName", "region", "currency", "exchangeRatePerUsd", "vatPercent", "shippingFlatUsd", "storefrontActive", "ownerUid", "updatedAt"]
+    },
+    "IntegrationSetting": {
+      "title": "IntegrationSetting",
+      "description": "External messaging and payment gateway adapter settings (non-secret metadata only).",
+      "type": "object",
+      "properties": {
+        "providerName": { "type": "string", "maxLength": 80 },
+        "category": { "type": "string", "enum": ["WhatsApp", "Email", "Payment"] },
+        "accountIdentifier": { "type": "string", "maxLength": 120 },
+        "endpointOrSender": { "type": "string", "maxLength": 160 },
+        "mode": { "type": "string", "enum": ["unconfigured", "sandbox", "live"] },
+        "configured": { "type": "boolean" },
+        "lastTestedAt": { "type": "string", "maxLength": 50 },
+        "testStatus": { "type": "string", "maxLength": 120 },
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["providerName", "category", "mode", "configured", "ownerUid", "updatedAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security and operational audit trail.",
+      "type": "object",
+      "properties": {
+        "ownerUid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "actorEmail": { "type": "string", "maxLength": 200 },
+        "actorRole": { "type": "string", "maxLength": 40 },
+        "action": { "type": "string", "maxLength": 120 },
+        "module": { "type": "string", "maxLength": 80 },
+        "targetId": { "type": "string", "maxLength": 128 },
+        "details": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ownerUid", "actorEmail", "actorRole", "action", "module", "details", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles and RBAC role assignments"
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "7Sense Perfumes product catalog and warehouse inventory"
+    },
+    "/stockMovements/{movementId}": {
+      "schema": { "$ref": "#/entities/StockMovement" },
+      "description": "Inventory restocks, warehouse transfers, and order stock deductions"
+    },
+    "/customers/{customerId}": {
+      "schema": { "$ref": "#/entities/Customer" },
+      "description": "CRM customer records, preferences, consent, and sales pipeline"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "E-commerce storefront and concierge orders"
+    },
+    "/campaigns/{campaignId}": {
+      "schema": { "$ref": "#/entities/Campaign" },
+      "description": "Marketing campaigns and A/B test tracking"
+    },
+    "/aiContent/{contentId}": {
+      "schema": { "$ref": "#/entities/AiContent" },
+      "description": "AI Marketing Studio generated copy and approval calendar"
+    },
+    "/messagingCampaigns/{msgId}": {
+      "schema": { "$ref": "#/entities/MessagingCampaign" },
+      "description": "WhatsApp Business and Email marketing campaigns"
+    },
+    "/expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Business and marketing expense ledger"
+    },
+    "/regionalConfigs/{countryCode}": {
+      "schema": { "$ref": "#/entities/RegionalConfig" },
+      "description": "UAE, Nigeria, Ghana, Kenya, Tanzania, Uganda, and international market configurations"
+    },
+    "/integrationSettings/{providerId}": {
+      "schema": { "$ref": "#/entities/IntegrationSetting" },
+      "description": "Integration adapter status and non-secret configuration"
+    },
+    "/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Immutable operational audit logs"
+    }
+  }
+}
